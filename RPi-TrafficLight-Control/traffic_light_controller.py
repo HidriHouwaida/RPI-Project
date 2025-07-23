@@ -1,44 +1,53 @@
 import RPi.GPIO as GPIO
 import time
 
-# définition des pins pour les leds 
-ledRougePin = 11    
-ledVertPin  = 13
+# Définition des broches GPIO (modifiable selon votre câblage)
+ledRougePin = 11
+ledVertPin = 13
 ledJaunePin = 15
 
 def setup():
-    GPIO.setmode(GPIO.BOARD)       
-    GPIO.setup(ledRougePin, GPIO.OUT)   # set the ledPin to OUTPUT mode
+    GPIO.setmode(GPIO.BOARD)  # Utilise la numérotation physique des broches
+    GPIO.setup(ledRougePin, GPIO.OUT)
     GPIO.setup(ledVertPin, GPIO.OUT)
     GPIO.setup(ledJaunePin, GPIO.OUT)
-    GPIO.output(ledRougePin, GPIO.LOW)  # make ledPin output LOW level
-    GPIO.output(ledVertPin,  GPIO.LOW)
+    # Éteint toutes les LEDs au démarrage
+    GPIO.output(ledRougePin, GPIO.LOW)
+    GPIO.output(ledVertPin, GPIO.LOW)
     GPIO.output(ledJaunePin, GPIO.LOW)
+    
+    print(f"Configuration OK - Rouge: pin{ledRougePin}, Vert: pin{ledVertPin}, Jaune: pin{ledJaunePin}")
 
-    print ('using pin%d'%ledRougePin)
-    print ('using pin%d'%ledVertPin)
-    print ('using pin%d'%ledJaunePin)
 def loop():
     while True:
-        GPIO.output(ledRougePin, GPIO.HIGH)   # make ledPin output HIGH level to turn on led
-        print ('led rouge turned on >>>')     # print information on terminal
-        time.sleep(1)                         # Wait for 1 second
-        GPIO.output(ledRougePin, GPIO.LOW)    # make ledPin output LOW level to turn off led
-        GPIO.output(ledJaunePin, GPIO.HIGH)
-        print ('led vert turned on <<<')
-        time.sleep(1)
-        GPIO.output(ledJaunePin, GPIO.LOW)
+        # Phase ROUGE (arrêt)
+        GPIO.output(ledRougePin, GPIO.HIGH)
+        print("🔴 Feu ROUGE allumé (Arrêt)")
+        time.sleep(5)  # 5 secondes
+        
+        # Phase VERT (passage)
+        GPIO.output(ledRougePin, GPIO.LOW)
         GPIO.output(ledVertPin, GPIO.HIGH)
-        print('led jaune turned on <<<')
-        time.sleep(1)
+        print("🟢 Feu VERT allumé (Passage)")
+        time.sleep(5)  # 5 secondes
+        
+        # Phase JAUNE (attention)
         GPIO.output(ledVertPin, GPIO.LOW)
-def destroy():
-    GPIO.cleanup()                      # Release all GPIO
+        GPIO.output(ledJaunePin, GPIO.HIGH)
+        print("🟡 Feu JAUNE allumé (Attention)")
+        time.sleep(2)  # 2 secondes
+        
+        # Éteindre le jaune avant de revenir au rouge
+        GPIO.output(ledJaunePin, GPIO.LOW)
 
-if __name__ == '__main__':              # Program entrance
-    print ('Program is starting ... \n')
+def destroy():
+    GPIO.cleanup()  # Nettoyage des broches GPIO
+    print("Programme arrêté. GPIO nettoyées.")
+
+if __name__ == '__main__':
+    print("Démarrage du simulateur de feux de circulation...")
     setup()
     try:
         loop()
-    except KeyboardInterrupt:            # Press ctrl-c to end the program.
+    except KeyboardInterrupt:  # Ctrl+C pour arrêter
         destroy()
