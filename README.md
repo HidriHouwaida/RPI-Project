@@ -1,4 +1,4 @@
-# � Raspberry Pi Projects Collection
+#  Raspberry Pi Projects Collection
 *A curated suite of Raspberry Pi experiments demonstrating GPIO control, IoT applications, and visual effects*
 
 ## 📂 Projects Overview
