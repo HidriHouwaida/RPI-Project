@@ -31,4 +31,4 @@ The 7-segment display segments are connected to the following GPIO pins:
 | F       | 15        |
 | G       | 14        |
 | DP      | 25        |
-|_____________________|
+_______________________
